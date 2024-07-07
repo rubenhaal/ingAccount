@@ -1,14 +1,15 @@
 package com.example.ing.IngAccount.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
+@Builder
 @Data
 @Entity
 @NoArgsConstructor
@@ -20,4 +21,11 @@ public class Account {
     Long id;
 
     private String identifier;
+    private AccountType accountType;
+    private boolean temporaryAccount;
+    private LocalDate closureDate;
+    private BigDecimal deposit;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "proprietary_id", referencedColumnName = "id")
+    private Person proprietary;
 }
