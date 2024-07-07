@@ -3,6 +3,7 @@ package com.example.ing.IngAccount.integration;
 import com.example.ing.IngAccount.dto.AccountDto;
 import com.example.ing.IngAccount.dto.PersonDto;
 import com.example.ing.IngAccount.entity.Account;
+import com.example.ing.IngAccount.entity.AccountType;
 import com.example.ing.IngAccount.entity.Person;
 import com.example.ing.IngAccount.repository.AccountRepository;
 import lombok.SneakyThrows;
@@ -79,6 +80,27 @@ public class AccountControllerIntegrationTest {
         assertNotNull(person);
         assertEquals("firstName",person.getFirstName());
     }
+
+    @Test
+    void shouldCreateEntity_whenAccountDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/createAccount";
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setAccountType(AccountType.SAVINGS);
+        accountDto.setIdentifier("TestIdentifier");
+
+        ResponseEntity<AccountDto> response = testRestTemplate.postForEntity(url, accountDto, AccountDto.class);
+
+        AccountDto accountResponse = response.getBody();
+        assertNotNull(accountResponse);
+        assertEquals("TestIdentifier", accountResponse.getIdentifier());
+        assertEquals(AccountType.SAVINGS, accountResponse.getAccountType());
+
+        assertNotNull(accountRepository.findByIdentifier("TestIdentifier"));
+    }
+
 
     private Account createPermanentAccount(String id){
         return Account.builder()

@@ -1,6 +1,7 @@
 package com.example.ing.IngAccount.service;
 
 import com.example.ing.IngAccount.dto.AccountDto;
+import com.example.ing.IngAccount.entity.Account;
 import com.example.ing.IngAccount.mapper.AccountMapper;
 import com.example.ing.IngAccount.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,5 +28,12 @@ public class AccountService {
     public Optional<AccountDto> findAccountById(String uuid){
         return accountRepository.findByIdentifier(uuid)
                 .map(accountMapper::toDto);
+    }
+
+    public AccountDto createNewAccount(AccountDto accountDto){
+        Account account = accountMapper.toEntity(accountDto);
+
+        return accountMapper.toDto(accountRepository.save(account));
+
     }
 }

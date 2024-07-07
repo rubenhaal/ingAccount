@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -35,6 +36,18 @@ class AccountServiceTest {
 
         //then
         assertTrue(accountById.isPresent());
+    }
+
+    @Test
+    void shouldReturnAndSaveAnAccountant(){
+        //given
+        when(accountRepository.save(any())).thenReturn(new Account());
+
+        //When
+        AccountDto accountById = accountService.createNewAccount(new AccountDto());
+
+        //then
+        assertNotNull(accountById);
     }
 
 }
