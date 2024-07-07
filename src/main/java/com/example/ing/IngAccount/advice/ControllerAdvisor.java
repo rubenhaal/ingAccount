@@ -1,4 +1,4 @@
-package com.example.ing.IngAccount.controller.advice;
+package com.example.ing.IngAccount.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
