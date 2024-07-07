@@ -1,5 +1,6 @@
 package com.example.ing.IngAccount.service.transationalTest;
 
+import com.example.ing.IngAccount.dto.AccountDto;
 import com.example.ing.IngAccount.entity.Account;
 import com.example.ing.IngAccount.entity.Person;
 import com.example.ing.IngAccount.repository.AccountRepository;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.ing.IngAccount.entity.AccountType.CURRENT;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,9 +44,11 @@ public class AccountServiceRepositoryTest {
     @Test
     void shouldReturnAnAccount_whenFindByIdIsCalled(){
 
-        Account account = accountService.findAccountById("acc1");
+        Optional<AccountDto> accountOpt = accountService.findAccountById("acc1");
 
-        assertNotNull(account);
+        assertTrue(accountOpt.isPresent());
+
+        AccountDto account = accountOpt.get();
         assertFalse(account.isTemporaryAccount());
         assertEquals(CURRENT, account.getAccountType());
         assertNotNull(account.getProprietary());
@@ -54,18 +58,18 @@ public class AccountServiceRepositoryTest {
     @Test
     void shouldNotFindAnAccount_whenFindByIdIsCalled(){
 
-        Account account = accountService.findAccountById("test");
-        assertNull(account);
+        Optional<AccountDto> accountOpt = accountService.findAccountById("test");
+        assertTrue(accountOpt.isEmpty());
     }
 
     @Test
     void shouldReturnAllAccounts(){
 
-        List<Account> accounts = accountService.findAllAccounts();
+        List<AccountDto> accounts = accountService.findAllAccounts();
 
         assertEquals(1, accounts.size());
 
-        Account account = accounts.get(0);
+        AccountDto account = accounts.get(0);
 
         assertNotNull(account);
         assertFalse(account.isTemporaryAccount());

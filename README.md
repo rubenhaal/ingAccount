@@ -30,7 +30,7 @@ Person entity:
 **Endpoints Account:**
 
     - Create
-    - Read: Receive an UUID if not foudn return the expected status cod
+    - Read: Receive an UUID if not foudn return the expected status code
     - Update: if not valid date error
     - Delete
 

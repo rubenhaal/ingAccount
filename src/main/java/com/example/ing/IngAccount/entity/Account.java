@@ -1,10 +1,12 @@
 package com.example.ing.IngAccount.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,7 +32,5 @@ public class Account {
     private BigDecimal deposit;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "proprietary_id", referencedColumnName = "id")
-    @JsonBackReference
-    @ToString.Exclude
     private Person proprietary;
 }

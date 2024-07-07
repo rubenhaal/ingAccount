@@ -1,5 +1,7 @@
 package com.example.ing.IngAccount.integration;
 
+import com.example.ing.IngAccount.dto.AccountDto;
+import com.example.ing.IngAccount.dto.PersonDto;
 import com.example.ing.IngAccount.entity.Account;
 import com.example.ing.IngAccount.entity.Person;
 import com.example.ing.IngAccount.repository.AccountRepository;
@@ -40,22 +42,42 @@ public class AccountControllerIntegrationTest {
 
         Account account = createPermanentAccount("acc1");
         accountRepository.save(account);
+
+        Account account1 = createPermanentAccount("acc2");
+        accountRepository.save(account1);
     }
 
     @Test
     @SneakyThrows
-    void shouldReturnAccount_whenGetCallIsPerform(){
+    void shouldReturnAccountList_whenGetCallIsPerform(){
         String urlHost= "http://localhost:"+port;
 
         String url = urlHost+"/api/account/getAllAccounts";
-        ResponseEntity<Account[]> response = testRestTemplate.getForEntity(url, Account[].class);
+        ResponseEntity<AccountDto[]> response = testRestTemplate.getForEntity(url, AccountDto[].class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        // Verificar el producto devuelto
-        Account[] account = response.getBody();
+        AccountDto[] account = response.getBody();
         assertNotNull(account);
         assertEquals("acc1", account[0].getIdentifier());
+    }
+
+    @Test
+    @SneakyThrows
+    void shouldReturnAnAccount_whenGetByIdIsCalled(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/acc2";
+        ResponseEntity<AccountDto> response = testRestTemplate.getForEntity(url, AccountDto.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        AccountDto account = response.getBody();
+        assertNotNull(account);
+        assertEquals("acc2", account.getIdentifier());
+        PersonDto person = account.getProprietary();
+        assertNotNull(person);
+        assertEquals("firstName",person.getFirstName());
     }
 
     private Account createPermanentAccount(String id){

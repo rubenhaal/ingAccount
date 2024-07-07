@@ -14,6 +14,6 @@ public class AccountDto {
     private boolean temporaryAccount;
     private LocalDate closureDate;
     private BigDecimal deposit;
-    private PersonDto person;
+    private PersonDto proprietary;
 
 }

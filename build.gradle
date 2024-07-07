@@ -28,6 +28,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	//open api
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.5.0'
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
@@ -39,6 +41,9 @@ dependencies {
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+	testAnnotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
 
 }
 
