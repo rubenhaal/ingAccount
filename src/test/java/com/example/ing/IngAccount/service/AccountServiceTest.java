@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,6 +50,25 @@ class AccountServiceTest {
 
         //then
         assertNotNull(accountById);
+    }
+
+    @Test
+    void shouldUpdateAnAccount(){
+        //given
+        when(accountRepository.save(any())).thenReturn(new Account());
+        when(accountRepository.findByIdentifier(any())).thenReturn(Optional.of(new Account()));
+        //When
+        AccountDto accountById = accountService.updateAccount(UUID.randomUUID().toString(), new AccountDto());
+
+        //then
+        assertNotNull(accountById);
+
+
+    }
+    @Test
+    void shouldDeleteAnAccount(){
+        Mockito.doNothing().when(accountRepository).deleteByIdentifier(any());
+        accountService.deleteAccount("test");
     }
 
 }

@@ -18,10 +18,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static com.example.ing.IngAccount.entity.AccountType.CURRENT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AccountControllerIntegrationTest {
@@ -101,6 +101,36 @@ public class AccountControllerIntegrationTest {
         assertNotNull(accountRepository.findByIdentifier("TestIdentifier"));
     }
 
+    @Test
+    void shouldUpdateEntity_whenAccountDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/acc2";
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setAccountType(AccountType.SAVINGS);
+
+        testRestTemplate.put(url, accountDto);
+        //then
+        Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
+
+        assertTrue(account2Opt.isPresent());
+        assertEquals(AccountType.SAVINGS, account2Opt.get().getAccountType());
+
+    }
+
+
+    @Test
+    void shouldDeleteEntity_whenAccountDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/acc2";
+        testRestTemplate.delete(url);
+
+        Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
+
+        assertTrue(account2Opt.isEmpty());
+    }
 
     private Account createPermanentAccount(String id){
         return Account.builder()

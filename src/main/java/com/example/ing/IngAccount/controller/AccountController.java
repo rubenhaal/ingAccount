@@ -37,4 +37,16 @@ public class AccountController {
         AccountDto response = accountService.createNewAccount(accountDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @PutMapping("{identifier}")
+    public ResponseEntity<AccountDto> updateAccount(@PathVariable String identifier, @RequestBody AccountDto accountDto){
+        AccountDto accountResponse = accountService.updateAccount(identifier, accountDto);
+        return ResponseEntity.ok(accountResponse);
+    }
+
+    @DeleteMapping("{identifier}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable String identifier){
+        accountService.deleteAccount(identifier);
+        return ResponseEntity.noContent().build();
+    }
 }

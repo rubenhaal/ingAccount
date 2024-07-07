@@ -3,7 +3,9 @@ package com.example.ing.IngAccount.service;
 import com.example.ing.IngAccount.dto.AccountDto;
 import com.example.ing.IngAccount.entity.Account;
 import com.example.ing.IngAccount.mapper.AccountMapper;
+import com.example.ing.IngAccount.mapper.PersonMapper;
 import com.example.ing.IngAccount.repository.AccountRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class AccountService {
 
 
@@ -19,6 +22,7 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     private final AccountMapper accountMapper = AccountMapper.INSTANCE;
+    private final PersonMapper personMapper = PersonMapper.INSTANCE;
 
     public List<AccountDto> findAllAccounts(){
         return accountRepository.findAll().stream().map(accountMapper::toDto)
@@ -34,6 +38,24 @@ public class AccountService {
         Account account = accountMapper.toEntity(accountDto);
 
         return accountMapper.toDto(accountRepository.save(account));
+    }
 
+    public AccountDto updateAccount(String identifier, AccountDto accountDto){
+
+        Account account = accountRepository.findByIdentifier(identifier).orElseThrow();
+
+        account.setTemporaryAccount(accountDto.isTemporaryAccount());
+        account.setAccountType(accountDto.getAccountType());
+        account.setDeposit(accountDto.getDeposit());
+        account.setProprietary(personMapper.toEntity(accountDto.getProprietary()));
+        account.setClosureDate(accountDto.getClosureDate());
+
+        account = accountRepository.save(account);
+
+        return accountMapper.toDto(account);
+    }
+
+    public void deleteAccount(String identifier){
+        accountRepository.deleteByIdentifier(identifier);
     }
 }
