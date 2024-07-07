@@ -1,6 +1,10 @@
 package com.example.ing.IngAccount.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,15 +22,17 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Size(min = 3, max = 35)
     private String firstName;
+    @Size(min = 3, max = 35)
     private String lastName;
+    @NotNull
     private LocalDate dateOfBirth;
+    @Email
     private String email;
 
-//    @OneToMany(mappedBy = "proprietary", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Account> accounts;
     @OneToOne(mappedBy = "proprietary", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Account account;
 
 }

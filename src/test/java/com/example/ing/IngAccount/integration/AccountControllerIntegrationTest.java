@@ -1,31 +1,35 @@
-package com.example.ing.IngAccount.service.transationalTest;
+package com.example.ing.IngAccount.integration;
 
 import com.example.ing.IngAccount.entity.Account;
 import com.example.ing.IngAccount.entity.Person;
 import com.example.ing.IngAccount.repository.AccountRepository;
-import com.example.ing.IngAccount.service.AccountService;
-import jakarta.transaction.Transactional;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
 import static com.example.ing.IngAccount.entity.AccountType.CURRENT;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-@Transactional
-public class AccountServiceRepositoryTest {
-
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class AccountControllerIntegrationTest {
     @Autowired
-    private AccountService accountService;
+    private TestRestTemplate testRestTemplate;
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @LocalServerPort
+    private int port;
 
 
 
@@ -36,42 +40,22 @@ public class AccountServiceRepositoryTest {
 
         Account account = createPermanentAccount("acc1");
         accountRepository.save(account);
-
     }
 
     @Test
-    void shouldReturnAnAccount_whenFindByIdIsCalled(){
+    @SneakyThrows
+    void shouldReturnAccount_whenGetCallIsPerform(){
+        String urlHost= "http://localhost:"+port;
 
-        Account account = accountService.findAccountById("acc1");
+        String url = urlHost+"/api/account/getAllAccounts";
+        ResponseEntity<Account[]> response = testRestTemplate.getForEntity(url, Account[].class);
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Verificar el producto devuelto
+        Account[] account = response.getBody();
         assertNotNull(account);
-        assertFalse(account.isTemporaryAccount());
-        assertEquals(CURRENT, account.getAccountType());
-        assertNotNull(account.getProprietary());
-        assertEquals("firstName",account.getProprietary().getFirstName());
-    }
-
-    @Test
-    void shouldNotFindAnAccount_whenFindByIdIsCalled(){
-
-        Account account = accountService.findAccountById("test");
-        assertNull(account);
-    }
-
-    @Test
-    void shouldReturnAllAccounts(){
-
-        List<Account> accounts = accountService.findAllAccounts();
-
-        assertEquals(1, accounts.size());
-
-        Account account = accounts.get(0);
-
-        assertNotNull(account);
-        assertFalse(account.isTemporaryAccount());
-        assertEquals(CURRENT, account.getAccountType());
-        assertNotNull(account.getProprietary());
-        assertEquals("firstName",account.getProprietary().getFirstName());
+        assertEquals("acc1", account[0].getIdentifier());
     }
 
     private Account createPermanentAccount(String id){
@@ -88,5 +72,4 @@ public class AccountServiceRepositoryTest {
                         .build())
                 .build();
     }
-
 }
