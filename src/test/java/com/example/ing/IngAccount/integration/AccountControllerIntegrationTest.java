@@ -138,13 +138,38 @@ public class AccountControllerIntegrationTest {
         AccountDto accountDto = new AccountDto();
         accountDto.setAccountType(AccountType.SAVINGS);
 
-        testRestTemplate.put(url, accountDto);
+        accountDto.setOpeningDate(LocalDate.now());
+        accountDto.setTemporaryAccount(false);
+        accountDto.setDeposit(BigDecimal.valueOf(100));
+        accountDto.setOpeningDate(LocalDate.now());
+
+        testRestTemplate.patchForObject(url, accountDto, AccountDto.class);
         //then
         Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
 
         assertTrue(account2Opt.isPresent());
         assertEquals(AccountType.SAVINGS, account2Opt.get().getAccountType());
 
+    }
+
+    @Test
+    void shouldNotUpdateEntity_whenAccountDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/acc2";
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setAccountType(AccountType.SAVINGS);
+
+
+        testRestTemplate.patchForObject(url, accountDto, String.class);
+
+        Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
+
+        assertTrue(account2Opt.isPresent());
+        assertEquals(CURRENT, account2Opt.get().getAccountType());
+
+        testRestTemplate.put(url, accountDto);
     }
 
 

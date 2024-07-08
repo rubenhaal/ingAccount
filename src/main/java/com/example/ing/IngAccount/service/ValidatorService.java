@@ -18,9 +18,6 @@ public class ValidatorService {
 
     public List<String> validateAccount(AccountDto accountDto){
         List<String> errors = new ArrayList<>();
-//        if( !checkIdentifier(accountDto.getIdentifier())){
-//            errors.add("Identifier should be at least 36 chars");
-//        }
 
         if(!checkOpeningAccount(accountDto.getOpeningDate())){
             errors.add("Opening Date should be at least 30 days");
@@ -36,6 +33,27 @@ public class ValidatorService {
         if(accountDto.getProprietary()==null){
             errors.add("Account should have a propietary");
         }else{
+            errors.addAll(validatePerson(accountDto.getProprietary()));
+        }
+
+        return errors;
+    }
+
+    public List<String> validateUpdateAccount(AccountDto accountDto){
+        List<String> errors = new ArrayList<>();
+
+        if(!checkOpeningAccount(accountDto.getOpeningDate())){
+            errors.add("Opening Date should be at least 30 days");
+        }
+
+        if(!checkClosureDate(accountDto.getClosureDate(), accountDto.isTemporaryAccount())){
+            errors.add("Temporary Account should have closure date");
+        }
+        if(!checkInitialDeposit(accountDto.getDeposit())){
+            errors.add("Not negative deposite are allowed");
+        }
+
+        if(accountDto.getProprietary()!=null){
             errors.addAll(validatePerson(accountDto.getProprietary()));
         }
 

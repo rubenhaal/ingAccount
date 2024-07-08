@@ -48,8 +48,13 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("{identifier}")
+    @PatchMapping("{identifier}")
     public ResponseEntity<AccountDto> updateAccount(@PathVariable String identifier, @RequestBody AccountDto accountDto){
+        List<String> errors = validatorService.validateUpdateAccount(accountDto);
+
+        if(!errors.isEmpty()){
+            throw new CreatingErrorException(errors);
+        }
         AccountDto accountResponse = accountService.updateAccount(identifier, accountDto);
         return ResponseEntity.ok(accountResponse);
     }
