@@ -169,7 +169,6 @@ public class AccountControllerIntegrationTest {
         String url = urlHost+"/api/account/acc2";
 
         AccountDto accountDto = new AccountDto();
-        accountDto.setAccountType(AccountType.SAVINGS);
 
         accountDto.setOpeningDate(LocalDate.now());
         accountDto.setTemporaryAccount(false);
@@ -181,7 +180,8 @@ public class AccountControllerIntegrationTest {
         Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
 
         assertTrue(account2Opt.isPresent());
-        assertEquals(AccountType.SAVINGS, account2Opt.get().getAccountType());
+        assertTrue(account2Opt.get().getDeposit().compareTo(BigDecimal.valueOf(100))==0);
+        assertFalse(account2Opt.get().isTemporaryAccount());
 
     }
 
@@ -192,7 +192,6 @@ public class AccountControllerIntegrationTest {
         String url = urlHost+"/api/account/acc2";
 
         AccountDto accountDto = new AccountDto();
-        accountDto.setAccountType(AccountType.SAVINGS);
 
         accountDto.setOpeningDate(LocalDate.now());
         accountDto.setTemporaryAccount(true);
@@ -205,7 +204,8 @@ public class AccountControllerIntegrationTest {
         Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
 
         assertTrue(account2Opt.isPresent());
-        assertEquals(AccountType.SAVINGS, account2Opt.get().getAccountType());
+        assertTrue(account2Opt.get().getDeposit().compareTo(BigDecimal.valueOf(100))==0);
+        assertTrue(account2Opt.get().isTemporaryAccount());
 
     }
 

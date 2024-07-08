@@ -46,7 +46,6 @@ public class AccountService {
         Account account = accountRepository.findByIdentifier(identifier).orElseThrow();
 
         account.setTemporaryAccount(accountDto.isTemporaryAccount());
-        account.setAccountType(accountDto.getAccountType());
         account.setDeposit(accountDto.getDeposit());
         account.setProprietary(personMapper.toEntity(accountDto.getProprietary()));
         account.setClosureDate(accountDto.getClosureDate());

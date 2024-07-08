@@ -23,6 +23,10 @@ public class ValidatorService {
             errors.add("Opening Date should be at least 30 days");
         }
 
+        if(accountDto.getAccountType()==null){
+            errors.add("On creation Account type is mandatory");
+        }
+
         if(!checkClosureDate(accountDto.getClosureDate(), accountDto.isTemporaryAccount())){
             errors.add("Temporary Account should have closure date");
         }
@@ -44,6 +48,9 @@ public class ValidatorService {
 
         if(!checkOpeningAccount(accountDto.getOpeningDate())){
             errors.add("Opening Date should be at least 30 days");
+        }
+        if(accountDto.getAccountType()!=null){
+            errors.add("Account type can not be changed");
         }
 
         if(!checkClosureDateUpdate(accountDto.getClosureDate(), accountDto.isTemporaryAccount())){
@@ -89,9 +96,6 @@ public class ValidatorService {
         return birthDate!=null &&Period.between(birthDate, LocalDate.now()).getYears()>=18;
     }
 
-    private boolean checkIdentifier(String identifier ){
-        return identifier!=null && identifier.length()== UUID_LENGTH;
-    }
 
     private boolean checkOpeningAccount(LocalDate openingAccount){
         return openingAccount!= null &&Period.between(openingAccount, LocalDate.now()).getDays()<=30;

@@ -13,7 +13,6 @@ public class AccountDto {
 
     @Size(min = 35, max = 35)
     private String identifier;
-    @NotNull
     private AccountType accountType;
     private boolean temporaryAccount;
     private LocalDate openingDate;
