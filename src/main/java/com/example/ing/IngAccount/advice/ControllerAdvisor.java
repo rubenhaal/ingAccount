@@ -19,7 +19,7 @@ public class ControllerAdvisor {
         Map<String, Object> errorDetails = new HashMap<>();
         errorDetails.put("errorMessage", ex.getMessage());
         errorDetails.put("errors", ex.getErrors());
-        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

@@ -22,7 +22,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Size(min = 35, max = 35)
+    @Size(min = 36, max = 36)
     private String identifier;
     @NotNull
     private AccountType accountType;

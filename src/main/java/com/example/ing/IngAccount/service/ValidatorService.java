@@ -14,10 +14,11 @@ import java.util.regex.Pattern;
 public class ValidatorService {
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    public static final int UUID_LENGTH = 36;
 
     public List<String> validateAccount(AccountDto accountDto){
         List<String> errors = new ArrayList<>();
-        if(!checkIdentifier(accountDto.getIdentifier())){
+        if( !checkIdentifier(accountDto.getIdentifier())){
             errors.add("Identifier should be at least 35 chars");
         }
 
@@ -60,22 +61,22 @@ public class ValidatorService {
 
     private boolean checkName(String name){
 
-        return name.length() > 3 && name.length() <= 35;
+        return name !=null && name.length() > 3 && name.length() <= 35;
 
     }
     private boolean checkMail(String email){
         return EMAIL_PATTERN.matcher(email).matches();
     }
     private boolean checkAge(LocalDate birthDate){
-        return Period.between(birthDate, LocalDate.now()).getYears()>=18;
+        return birthDate!=null &&Period.between(birthDate, LocalDate.now()).getYears()>=18;
     }
 
     private boolean checkIdentifier(String identifier ){
-        return identifier.length()==35;
+        return identifier!=null && identifier.length()== UUID_LENGTH;
     }
 
     private boolean checkOpeningAccount(LocalDate openingAccount){
-        return Period.between(openingAccount, LocalDate.now()).getDays()>=30;
+        return openingAccount!= null &&Period.between(openingAccount, LocalDate.now()).getDays()<=30;
     }
 
     private boolean checkClosureDate(LocalDate localDate, boolean temporary){
@@ -83,6 +84,6 @@ public class ValidatorService {
     }
 
     private boolean checkInitialDeposit(BigDecimal deposit){
-        return deposit.compareTo(BigDecimal.ZERO)>=0;
+        return deposit!=null && deposit.compareTo(BigDecimal.ZERO)>=0;
     }
 }

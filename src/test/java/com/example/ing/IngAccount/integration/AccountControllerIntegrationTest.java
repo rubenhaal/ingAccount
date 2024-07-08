@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.example.ing.IngAccount.entity.AccountType.CURRENT;
 import static org.junit.jupiter.api.Assertions.*;
@@ -89,16 +90,29 @@ public class AccountControllerIntegrationTest {
 
         AccountDto accountDto = new AccountDto();
         accountDto.setAccountType(AccountType.SAVINGS);
-        accountDto.setIdentifier("TestIdentifier");
+        String id = UUID.randomUUID().toString();
+        accountDto.setIdentifier(id);
+        accountDto.setOpeningDate(LocalDate.now());
+        accountDto.setTemporaryAccount(false);
+        accountDto.setDeposit(BigDecimal.valueOf(100));
+        accountDto.setOpeningDate(LocalDate.now());
+
+        PersonDto personDto = new PersonDto();
+        personDto.setEmail("test@email.com");
+        personDto.setFirstName("Testuser");
+        personDto.setLastName("testlastname");
+        personDto.setDateOfBirth(LocalDate.of(2000,1,10));
+
+        accountDto.setProprietary(personDto);
 
         ResponseEntity<AccountDto> response = testRestTemplate.postForEntity(url, accountDto, AccountDto.class);
 
         AccountDto accountResponse = response.getBody();
         assertNotNull(accountResponse);
-        assertEquals("TestIdentifier", accountResponse.getIdentifier());
+        assertEquals(id, accountResponse.getIdentifier());
         assertEquals(AccountType.SAVINGS, accountResponse.getAccountType());
 
-        assertNotNull(accountRepository.findByIdentifier("TestIdentifier"));
+        assertNotNull(accountRepository.findByIdentifier(id));
     }
 
 
@@ -112,14 +126,9 @@ public class AccountControllerIntegrationTest {
         accountDto.setAccountType(AccountType.SAVINGS);
         accountDto.setIdentifier("TestIdentifier");
 
-        ResponseEntity<AccountDto> response = testRestTemplate.postForEntity(url, accountDto, AccountDto.class);
-
-        AccountDto accountResponse = response.getBody();
-        assertNotNull(accountResponse);
-        assertEquals("TestIdentifier", accountResponse.getIdentifier());
-        assertEquals(AccountType.SAVINGS, accountResponse.getAccountType());
-
-        assertNotNull(accountRepository.findByIdentifier("TestIdentifier"));
+        ResponseEntity<String> responseEntity = testRestTemplate.postForEntity(url, accountDto, String.class);
+        assertTrue(accountRepository.findByIdentifier("TestIdentifier").isEmpty());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Test
