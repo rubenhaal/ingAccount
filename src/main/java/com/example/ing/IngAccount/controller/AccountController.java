@@ -43,9 +43,6 @@ public class AccountController {
         if(!errors.isEmpty()){
             throw new CreatingErrorException(errors);
         }
-//        if (!errors.isEmpty()) {
-//            return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-//        }
 
         AccountDto response = accountService.createNewAccount(accountDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

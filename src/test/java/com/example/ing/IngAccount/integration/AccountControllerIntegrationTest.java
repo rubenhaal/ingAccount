@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.example.ing.IngAccount.entity.AccountType.CURRENT;
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,8 +89,7 @@ public class AccountControllerIntegrationTest {
 
         AccountDto accountDto = new AccountDto();
         accountDto.setAccountType(AccountType.SAVINGS);
-        String id = UUID.randomUUID().toString();
-        accountDto.setIdentifier(id);
+
         accountDto.setOpeningDate(LocalDate.now());
         accountDto.setTemporaryAccount(false);
         accountDto.setDeposit(BigDecimal.valueOf(100));
@@ -109,10 +107,10 @@ public class AccountControllerIntegrationTest {
 
         AccountDto accountResponse = response.getBody();
         assertNotNull(accountResponse);
-        assertEquals(id, accountResponse.getIdentifier());
+        assertNotNull(accountResponse.getIdentifier());
         assertEquals(AccountType.SAVINGS, accountResponse.getAccountType());
 
-        assertNotNull(accountRepository.findByIdentifier(id));
+        assertNotNull(accountRepository.findByIdentifier(accountResponse.getIdentifier()));
     }
 
 
