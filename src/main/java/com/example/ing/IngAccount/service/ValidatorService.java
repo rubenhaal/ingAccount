@@ -46,7 +46,7 @@ public class ValidatorService {
             errors.add("Opening Date should be at least 30 days");
         }
 
-        if(!checkClosureDate(accountDto.getClosureDate(), accountDto.isTemporaryAccount())){
+        if(!checkClosureDateUpdate(accountDto.getClosureDate(), accountDto.isTemporaryAccount())){
             errors.add("Temporary Account should have closure date");
         }
         if(!checkInitialDeposit(accountDto.getDeposit())){
@@ -98,7 +98,21 @@ public class ValidatorService {
     }
 
     private boolean checkClosureDate(LocalDate localDate, boolean temporary){
-        return !temporary || localDate != null;
+
+        if (temporary){
+            return localDate!=null && Period.between(LocalDate.now(), localDate).getMonths()>=2;
+        }
+        return true;
+
+    }
+
+    private boolean checkClosureDateUpdate(LocalDate localDate, boolean temporary){
+
+        if (temporary){
+            return localDate!=null && Period.between(LocalDate.now(), localDate).getMonths()>=1;
+        }
+        return true;
+
     }
 
     private boolean checkInitialDeposit(BigDecimal deposit){

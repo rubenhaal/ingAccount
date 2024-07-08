@@ -82,7 +82,7 @@ public class AccountControllerIntegrationTest {
     }
 
     @Test
-    void shouldCreateEntity_whenAccountDtoIsReceived(){
+    void shouldCreateAccountEntity_whenAccountDtoIsReceived(){
         String urlHost= "http://localhost:"+port;
 
         String url = urlHost+"/api/account/createAccount";
@@ -115,6 +115,39 @@ public class AccountControllerIntegrationTest {
 
 
     @Test
+    void shouldCreateTemporaryAccountEntity_whenAccountDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/createAccount";
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setAccountType(AccountType.SAVINGS);
+
+        accountDto.setOpeningDate(LocalDate.now());
+        accountDto.setTemporaryAccount(true);
+        accountDto.setDeposit(BigDecimal.valueOf(100));
+        accountDto.setOpeningDate(LocalDate.now());
+        accountDto.setClosureDate(LocalDate.now().plusMonths(3));
+
+        PersonDto personDto = new PersonDto();
+        personDto.setEmail("test@email.com");
+        personDto.setFirstName("Testuser");
+        personDto.setLastName("testlastname");
+        personDto.setDateOfBirth(LocalDate.of(2000,1,10));
+
+        accountDto.setProprietary(personDto);
+
+        ResponseEntity<AccountDto> response = testRestTemplate.postForEntity(url, accountDto, AccountDto.class);
+
+        AccountDto accountResponse = response.getBody();
+        assertNotNull(accountResponse);
+        assertNotNull(accountResponse.getIdentifier());
+        assertEquals(AccountType.SAVINGS, accountResponse.getAccountType());
+
+        assertNotNull(accountRepository.findByIdentifier(accountResponse.getIdentifier()));
+    }
+
+    @Test
     void shouldNotCreateEntity_whenAccountNotValidDtoIsReceived(){
         String urlHost= "http://localhost:"+port;
 
@@ -140,6 +173,30 @@ public class AccountControllerIntegrationTest {
 
         accountDto.setOpeningDate(LocalDate.now());
         accountDto.setTemporaryAccount(false);
+        accountDto.setDeposit(BigDecimal.valueOf(100));
+        accountDto.setOpeningDate(LocalDate.now());
+
+        testRestTemplate.patchForObject(url, accountDto, AccountDto.class);
+        //then
+        Optional<Account> account2Opt = accountRepository.findByIdentifier("acc2");
+
+        assertTrue(account2Opt.isPresent());
+        assertEquals(AccountType.SAVINGS, account2Opt.get().getAccountType());
+
+    }
+
+    @Test
+    void shouldUpdateTemporalAccountEntity_whenAccountDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/acc2";
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setAccountType(AccountType.SAVINGS);
+
+        accountDto.setOpeningDate(LocalDate.now());
+        accountDto.setTemporaryAccount(true);
+        accountDto.setClosureDate(LocalDate.now().plusMonths(1).plusDays(15));
         accountDto.setDeposit(BigDecimal.valueOf(100));
         accountDto.setOpeningDate(LocalDate.now());
 
