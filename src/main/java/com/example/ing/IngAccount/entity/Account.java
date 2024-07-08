@@ -27,6 +27,7 @@ public class Account {
     @NotNull
     private AccountType accountType;
     private boolean temporaryAccount;
+    private LocalDate openingDate;
     private LocalDate closureDate;
     @NotNull
     private BigDecimal deposit;

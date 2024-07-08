@@ -101,6 +101,27 @@ public class AccountControllerIntegrationTest {
         assertNotNull(accountRepository.findByIdentifier("TestIdentifier"));
     }
 
+
+    @Test
+    void shouldNotCreateEntity_whenAccountNotValidDtoIsReceived(){
+        String urlHost= "http://localhost:"+port;
+
+        String url = urlHost+"/api/account/createAccount";
+
+        AccountDto accountDto = new AccountDto();
+        accountDto.setAccountType(AccountType.SAVINGS);
+        accountDto.setIdentifier("TestIdentifier");
+
+        ResponseEntity<AccountDto> response = testRestTemplate.postForEntity(url, accountDto, AccountDto.class);
+
+        AccountDto accountResponse = response.getBody();
+        assertNotNull(accountResponse);
+        assertEquals("TestIdentifier", accountResponse.getIdentifier());
+        assertEquals(AccountType.SAVINGS, accountResponse.getAccountType());
+
+        assertNotNull(accountRepository.findByIdentifier("TestIdentifier"));
+    }
+
     @Test
     void shouldUpdateEntity_whenAccountDtoIsReceived(){
         String urlHost= "http://localhost:"+port;
