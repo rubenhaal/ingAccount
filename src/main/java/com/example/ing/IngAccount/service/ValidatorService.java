@@ -19,7 +19,7 @@ public class ValidatorService {
     public List<String> validateAccount(AccountDto accountDto){
         List<String> errors = new ArrayList<>();
         if( !checkIdentifier(accountDto.getIdentifier())){
-            errors.add("Identifier should be at least 35 chars");
+            errors.add("Identifier should be at least 36 chars");
         }
 
         if(!checkOpeningAccount(accountDto.getOpeningDate())){
